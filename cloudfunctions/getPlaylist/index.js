@@ -9,10 +9,33 @@ const ICODE = "9C7A1756CCCEBE22";
 const URL = `https://apis.imooc.com/personalized?icode=${ICODE}`;
 const playlistCollection = db.collection("playlist");
 
+const MAX_LIMIT = 100; // 最大限制
+
 // 云函数入口函数
 exports.main = async (event, context) => {
   // 获取歌单
-  const list = await playlistCollection.get();
+  // const list = await playlistCollection.get(); // 突破100条限制
+  const count = await playlistCollection.count();
+  const total = count.total;
+  const batchTimes = Math.ceil(total / MAX_LIMIT); // 计算分批次数
+  const tasks = [];
+  for (let i = 0; i < batchTimes; i++) {
+    const promise = await playlistCollection
+      .skip(i * MAX_LIMIT)
+      .limit(MAX_LIMIT)
+      .get();
+    tasks.push(promise);
+  }
+  let list = {
+    data: [],
+  };
+  if (tasks.length > 0) {
+    list = (await Promise.all(tasks)).reduce((acc, cur) => {
+      return {
+        data: [...acc.data, ...cur.data],
+      };
+    });
+  }
 
   // 获取最新歌单
   const { data } = await axios.get(URL);
@@ -22,6 +45,7 @@ exports.main = async (event, context) => {
   }
   const playlist = data.result;
 
+  // 去重
   const newData = [];
   for (let i = 0, len1 = playlist.length; i < len1; i++) {
     let flag = true; // 判断是否存在相同歌单
