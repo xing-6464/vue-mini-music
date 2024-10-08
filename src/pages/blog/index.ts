@@ -1,7 +1,7 @@
-import { defineComponent, ref } from '@vue-mini/core';
+import { definePage, ref } from "@vue-mini/core";
 
-defineComponent(() => {
-  const greeting = ref('欢迎使用 Vue Mini');
+definePage(() => {
+  const greeting = ref("欢迎使用 Vue Mini");
 
   return {
     greeting,
