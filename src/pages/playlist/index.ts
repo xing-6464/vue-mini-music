@@ -21,9 +21,15 @@ definePage(() => {
     },
   ];
   const playlists = ref<{ [key: string]: string | number }[]>([]);
+  const playlistsCount = ref(0);
 
   // 获取歌单
   const getPlaylist = async () => {
+    // 判断是否已经获取完毕
+    if (playlists.value.length === playlistsCount.value) {
+      return;
+    }
+
     // 显示加载动画
     await wx.showLoading({
       title: "加载中",
@@ -34,6 +40,7 @@ definePage(() => {
       data: {
         start: playlists.value.length,
         count: MAX_LIMIT,
+        $url: "playlist",
       },
     });
     if (result && typeof result !== "string" && Array.isArray(result.data)) {
@@ -47,6 +54,13 @@ definePage(() => {
 
   // 监听页面显示
   onShow(async () => {
+    const { result } = await wx.cloud.callFunction({
+      name: "music",
+      data: {
+        $url: "playlist_length",
+      },
+    });
+    playlistsCount.value = parseInt(result as string);
     await getPlaylist();
   });
 
