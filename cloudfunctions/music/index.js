@@ -2,6 +2,11 @@
 const cloud = require("wx-server-sdk");
 
 const TcbRouter = require("tcb-router");
+const axios = require("axios");
+
+const ICODE = "9C7A1756CCCEBE22";
+const ICODESTRING = `icode=${ICODE}`;
+const BASE_URL = "https://apis.imooc.com";
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }); // 使用当前云环境
 
@@ -20,10 +25,18 @@ exports.main = async (event, context) => {
       .get();
   });
 
+  // 获取数据库中的歌单数量
   app.router("playlist_length", async (ctx, next) => {
-    // 获取数据库中的歌单数量
     const res = await cloud.database().collection("playlist").count();
     ctx.body = res.total;
+  });
+
+  // 获取歌单列表
+  app.router("musicList", async (ctx, next) => {
+    const res = await axios.get(
+      `${BASE_URL}/playlist/detail?id=${event.playlistId}&${ICODESTRING}`,
+    );
+    ctx.body = res.data;
   });
 
   return app.serve();

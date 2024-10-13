@@ -30,8 +30,18 @@ defineComponent({
       }
     });
 
+    async function goToMusicList() {
+      await wx.navigateTo({
+        url: `../../pages/musicList/index?playlistId=${props.playlist.id}`,
+      });
+    }
+
     return {
+      // data
       playCount,
+
+      // functions
+      goToMusicList,
     };
   },
 });

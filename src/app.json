@@ -4,7 +4,9 @@
   "pages": [
     "pages/playlist/index",
     "pages/blog/index",
-    "pages/profile/index"
+    "pages/profile/index",
+    "pages/musicList/index",
+    "pages/player/index"
   ],
   "window": {
     "navigationBarBackgroundColor": "#d43c33",
