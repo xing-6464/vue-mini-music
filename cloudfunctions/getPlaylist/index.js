@@ -5,7 +5,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }); // 使用当前云环境
 
 const db = cloud.database(); // 初始化数据库
 const axios = require("axios");
-const ICODE = "9C7A1756CCCEBE22";
+const ICODE = "2A09F26AE350014A";
 const URL = `https://apis.imooc.com/personalized?icode=${ICODE}`;
 const playlistCollection = db.collection("playlist");
 

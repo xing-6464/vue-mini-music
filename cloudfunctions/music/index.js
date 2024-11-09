@@ -4,7 +4,7 @@ const cloud = require("wx-server-sdk");
 const TcbRouter = require("tcb-router");
 const axios = require("axios");
 
-const ICODE = "9C7A1756CCCEBE22";
+const ICODE = "2A09F26AE350014A";
 const ICODESTRING = `icode=${ICODE}`;
 const BASE_URL = "https://apis.imooc.com";
 

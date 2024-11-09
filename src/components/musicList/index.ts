@@ -10,13 +10,15 @@ defineComponent({
     const playingId = ref(-1);
 
     async function onSelect(e: TouchEvent) {
-      const musicid = (
-        e.currentTarget! as unknown as { dataset: { musicid: number } }
-      ).dataset.musicid;
+      const { musicid, index } = (
+        e.currentTarget! as unknown as {
+          dataset: { musicid: number; index: number };
+        }
+      ).dataset;
       playingId.value = musicid;
 
       await wx.navigateTo({
-        url: `../../pages/player/index?musicid=${musicid}`,
+        url: `../../pages/player/index?musicId=${musicid}&index=${index}`,
       });
     }
 
