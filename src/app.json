@@ -8,6 +8,9 @@
     "pages/musicList/index",
     "pages/player/index"
   ],
+  "requiredBackgroundModes": [
+    "audio"
+  ],
   "window": {
     "navigationBarBackgroundColor": "#d43c33",
     "navigationBarTextStyle": "white",

@@ -39,5 +39,12 @@ exports.main = async (event, context) => {
     ctx.body = res.data;
   });
 
+  // 获取歌曲路由
+  app.router("musicUrl", async (ctx, next) => {
+    ctx.body = await axios
+      .get(BASE_URL + `/song/url?id=${event.musicId}&${ICODESTRING}`)
+      .then((res) => res.data);
+  });
+
   return app.serve();
 };
