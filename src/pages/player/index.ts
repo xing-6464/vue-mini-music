@@ -12,6 +12,7 @@ definePage((query) => {
     await loadMusicDetail();
   });
 
+  // 加载音乐详情
   async function loadMusicDetail() {
     const music = musicList[currentIndex];
     await wx.setNavigationBarTitle({
