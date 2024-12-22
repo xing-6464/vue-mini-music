@@ -4,6 +4,7 @@
 ></view>
 <view class="player-mask"></view>
 
+<!-- 封面信息 -->
 <view class="player-info">
   <view class="player-disc {{isPlaying ? 'play' : ''}}">
     <image
@@ -11,13 +12,18 @@
       src="{{picUrl}}"
     ></image>
   </view>
-</view>
+  <!-- 进度条 -->
+  <view class="progress-bar">
+    <x-progress-bar />
+  </view>
 
-<view class="control">
-  <text class="iconfont icon-shangyishoushangyige" bind:tap="onPrev"></text>
-  <text
-    class="iconfont {{isPlaying ? 'icon-zanting' : 'icon-bofang'}}"
-    bind:tap="togglePlaying"
-  ></text>
-  <text class="iconfont icon-xiayigexiayishou" bind:tap="onNext"></text>
+  <!-- 控制面板 -->
+  <view class="control">
+    <text class="iconfont icon-shangyishoushangyige" bind:tap="onPrev"></text>
+    <text
+      class="iconfont {{isPlaying ? 'icon-zanting' : 'icon-bofang'}}"
+      bind:tap="togglePlaying"
+    ></text>
+    <text class="iconfont icon-xiayigexiayishou" bind:tap="onNext"></text>
+  </view>
 </view>
