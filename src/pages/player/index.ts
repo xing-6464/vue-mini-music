@@ -9,7 +9,7 @@ definePage((query) => {
   const musicList: { [key: string]: unknown }[] =
     wx.getStorageSync("musicList");
   // 正在播放歌曲的index
-  const currentIndex = parseInt(query.index as string);
+  let currentIndex = parseInt(query.index as string);
   // 获取全局唯一的背景音频管理器
   const backgroundAudioManager = wx.getBackgroundAudioManager();
 
@@ -19,6 +19,7 @@ definePage((query) => {
 
   // 加载音乐详情
   async function loadMusicDetail(musicId: string) {
+    backgroundAudioManager.stop();
     const music = musicList[currentIndex];
     await wx.setNavigationBarTitle({
       title: music.name as string,
@@ -59,7 +60,37 @@ definePage((query) => {
       });
   }
 
+  function togglePlaying() {
+    // 正在播放
+    if (isPlaying.value) {
+      backgroundAudioManager.pause();
+    } else {
+      backgroundAudioManager.play();
+    }
+    isPlaying.value = !isPlaying.value;
+  }
+
+  function onPrev() {
+    currentIndex--;
+    if (currentIndex < 0) {
+      currentIndex = musicList.length - 1;
+    }
+    void loadMusicDetail(musicList[currentIndex].id as string);
+  }
+
+  function onNext() {
+    currentIndex++;
+    if (currentIndex >= musicList.length) {
+      currentIndex = 0;
+    }
+    void loadMusicDetail(musicList[currentIndex].id as string);
+  }
+
   return {
     picUrl,
+    isPlaying,
+    togglePlaying,
+    onPrev,
+    onNext,
   };
 });

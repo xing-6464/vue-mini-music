@@ -49,6 +49,11 @@
     no-repeat center/contain;
   transform: rotate(-15deg);
   transform-origin: 24rpx 10rpx;
+  transition: transform 0.5s ease;
+}
+
+.play.player-disc::after {
+  transform: rotate(0deg);
 }
 
 .player-img {
@@ -81,7 +86,27 @@
 }
 
 .icon-bofang,
-icon-zanting {
+.icon-zanting {
   font-size: 120rpx;
   margin: 0 50rpx;
+}
+
+.rotation {
+  animation: rotation 12s linear infinite;
+  -moz-animation: rotation 12s linear infinite;
+  -webkit-animation: rotation 12s linear infinite;
+  -o-animation: rotation 12s linear infinite;
+}
+
+.rotation-paused {
+  animation-play-state: paused;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
