@@ -2,9 +2,12 @@ import { defineComponent, onReady, reactive, ref } from "@vue-mini/core";
 
 defineComponent({
   setup(props, ctx) {
+    let progressValue = 0;
+    let movableDisValue = 0;
     let movableAreaWidth = 0;
     let movableViewWidth = 0;
-    let currentSec = "0";
+    let currentSec = "0"; // 当前秒数
+    let duration = 0; // 总时长
     const backgroundAudioManager = wx.getBackgroundAudioManager();
     // 音乐播放时间
     const showTime = reactive({
@@ -21,6 +24,27 @@ defineComponent({
       bindBGMEvents();
     });
 
+    function onChange(e: { detail: { source: string; x: number; y: number } }) {
+      // 拖动
+      if (e.detail.source == "touch") {
+        progressValue =
+          (e.detail.x / (movableAreaWidth - movableViewWidth)) * 100;
+        movableDisValue = e.detail.x;
+      }
+    }
+
+    function onTouchEnd() {
+      const currentTimeFmt = dateFormat(
+        Math.floor(backgroundAudioManager.currentTime),
+      );
+      progress.value = progressValue;
+      movableDis.value = movableDisValue;
+      Object.assign(showTime, {
+        currentTime: currentTimeFmt.min + ":" + currentTimeFmt.sec,
+      });
+      backgroundAudioManager.seek((duration * progressValue) / 100);
+    }
+
     function getMovableDis() {
       const q = ctx.createSelectorQuery();
       q.select(".movable-area").boundingClientRect();
@@ -28,7 +52,6 @@ defineComponent({
       q.exec((rect: { width: number }[]) => {
         movableAreaWidth = rect[0].width;
         movableViewWidth = rect[1].width;
-        console.log(movableAreaWidth, movableViewWidth);
       });
     }
 
@@ -82,7 +105,7 @@ defineComponent({
     }
 
     function setTime() {
-      const duration = backgroundAudioManager.duration;
+      duration = backgroundAudioManager.duration;
       const durationFmt = dateFormat(duration);
       console.log(durationFmt);
       Object.assign(showTime, {
@@ -110,6 +133,9 @@ defineComponent({
       showTime,
       movableDis,
       progress,
+      // methods
+      onChange,
+      onTouchEnd,
     };
   },
 });

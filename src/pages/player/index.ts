@@ -45,6 +45,15 @@ definePage((query) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const result = res.result as AnyObject;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (result.data[0].url == null) {
+          await wx.showToast({
+            title: "该歌曲暂无版权",
+          });
+          await wx.hideLoading();
+          onNext();
+          return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         backgroundAudioManager.src = result.data[0].url as string;
         backgroundAudioManager.title = music.name as string;
         backgroundAudioManager.coverImgUrl = (
