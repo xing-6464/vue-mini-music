@@ -4,6 +4,7 @@ defineComponent({
   setup(props, ctx) {
     let movableAreaWidth = 0;
     let movableViewWidth = 0;
+    let currentSec = "0";
     const backgroundAudioManager = wx.getBackgroundAudioManager();
     // 音乐播放时间
     const showTime = reactive({
@@ -51,7 +52,24 @@ defineComponent({
         }
       });
 
-      backgroundAudioManager.onTimeUpdate(() => {});
+      backgroundAudioManager.onTimeUpdate(() => {
+        const currentTime = backgroundAudioManager.currentTime;
+        const duration = backgroundAudioManager.duration;
+        const sec = currentTime.toString().split(".")[0];
+
+        // 优化：防止重复触发
+        if (sec != currentSec) {
+          const currentTimeFmt = dateFormat(currentTime);
+
+          movableDis.value =
+            ((movableAreaWidth - movableViewWidth) * currentTime) / duration;
+          progress.value = (currentTime / duration) * 100;
+          Object.assign(showTime, {
+            currentTime: currentTimeFmt.min + ":" + currentTimeFmt.sec,
+          });
+          currentSec = sec;
+        }
+      });
 
       backgroundAudioManager.onEnded(() => {});
 
@@ -84,7 +102,7 @@ defineComponent({
 
     // 补零
     function parse0(sec: number) {
-      return sec < 10 ? "0" + sec : sec;
+      return sec < 10 ? "0" + sec : sec.toString();
     }
 
     return {
