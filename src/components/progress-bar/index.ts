@@ -8,6 +8,7 @@ defineComponent({
     let movableViewWidth = 0;
     let currentSec = "0"; // 当前秒数
     let duration = 0; // 总时长
+    let isMoving = false; // 是否正在拖动 解决：当前进度条推动时候和updatetime事件冲突的问题
     const backgroundAudioManager = wx.getBackgroundAudioManager();
     // 音乐播放时间
     const showTime = reactive({
@@ -30,6 +31,7 @@ defineComponent({
         progressValue =
           (e.detail.x / (movableAreaWidth - movableViewWidth)) * 100;
         movableDisValue = e.detail.x;
+        isMoving = true;
       }
     }
 
@@ -43,6 +45,7 @@ defineComponent({
         currentTime: currentTimeFmt.min + ":" + currentTimeFmt.sec,
       });
       backgroundAudioManager.seek((duration * progressValue) / 100);
+      isMoving = false;
     }
 
     function getMovableDis() {
@@ -56,7 +59,9 @@ defineComponent({
     }
 
     function bindBGMEvents() {
-      backgroundAudioManager.onPlay(() => {});
+      backgroundAudioManager.onPlay(() => {
+        isMoving = false;
+      });
 
       backgroundAudioManager.onStop(() => {});
 
@@ -76,25 +81,29 @@ defineComponent({
       });
 
       backgroundAudioManager.onTimeUpdate(() => {
-        const currentTime = backgroundAudioManager.currentTime;
-        const duration = backgroundAudioManager.duration;
-        const sec = currentTime.toString().split(".")[0];
+        if (!isMoving) {
+          const currentTime = backgroundAudioManager.currentTime;
+          const duration = backgroundAudioManager.duration;
+          const sec = currentTime.toString().split(".")[0];
 
-        // 优化：防止重复触发
-        if (sec != currentSec) {
-          const currentTimeFmt = dateFormat(currentTime);
+          // 优化：防止重复触发
+          if (sec != currentSec) {
+            const currentTimeFmt = dateFormat(currentTime);
 
-          movableDis.value =
-            ((movableAreaWidth - movableViewWidth) * currentTime) / duration;
-          progress.value = (currentTime / duration) * 100;
-          Object.assign(showTime, {
-            currentTime: currentTimeFmt.min + ":" + currentTimeFmt.sec,
-          });
-          currentSec = sec;
+            movableDis.value =
+              ((movableAreaWidth - movableViewWidth) * currentTime) / duration;
+            progress.value = (currentTime / duration) * 100;
+            Object.assign(showTime, {
+              currentTime: currentTimeFmt.min + ":" + currentTimeFmt.sec,
+            });
+            currentSec = sec;
+          }
         }
       });
 
-      backgroundAudioManager.onEnded(() => {});
+      backgroundAudioManager.onEnded(() => {
+        ctx.triggerEvent("musicEnd");
+      });
 
       backgroundAudioManager.onError((res) => {
         console.error(res.errMsg);
