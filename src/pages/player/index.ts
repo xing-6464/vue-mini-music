@@ -5,6 +5,10 @@ definePage((query) => {
   const picUrl = ref("");
   // 音乐是否正在播放
   const isPlaying = ref(false);
+  // 歌词是否显示
+  const isLyricShow = ref(false);
+  // 歌词
+  const lyric = ref("");
 
   const musicList: { [key: string]: unknown }[] =
     wx.getStorageSync("musicList");
@@ -66,6 +70,25 @@ definePage((query) => {
 
         isPlaying.value = true;
         await wx.hideLoading();
+
+        // 加载歌词
+        await wx.cloud
+          .callFunction({
+            name: "music",
+            data: {
+              musicId,
+              $url: "lyric",
+            },
+          })
+          .then((res) => {
+            console.log(res);
+            let l = "暂无歌词";
+            const lrc = (res.result as { lrc: { lyric: string } }).lrc;
+            if (lrc) {
+              l = lrc.lyric;
+            }
+            lyric.value = l;
+          });
       });
   }
 
@@ -95,11 +118,18 @@ definePage((query) => {
     void loadMusicDetail(musicList[currentIndex].id as string);
   }
 
+  function onChangeLyricShow() {
+    isLyricShow.value = !isLyricShow.value;
+  }
+
   return {
     picUrl,
     isPlaying,
+    isLyricShow,
+    lyric,
     togglePlaying,
     onPrev,
     onNext,
+    onChangeLyricShow,
   };
 });

@@ -46,5 +46,12 @@ exports.main = async (event, context) => {
       .then((res) => res.data);
   });
 
+  // 获取歌词
+  app.router("lyric", async (ctx, next) => {
+    ctx.body = await axios
+      .get(BASE_URL + `/lyric?id=${event.musicId}&${ICODESTRING}`)
+      .then((res) => res.data);
+  });
+
   return app.serve();
 };
