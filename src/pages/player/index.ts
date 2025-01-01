@@ -1,4 +1,5 @@
 import { definePage, onShow, ref } from '@vue-mini/core'
+import { type App } from '@/app'
 
 definePage((query, ctx) => {
   // 音乐封面图片url
@@ -9,6 +10,10 @@ definePage((query, ctx) => {
   const isLyricShow = ref(false)
   // 歌词
   const lyric = ref('')
+  // 歌曲是否相同
+  const isSame = ref(false)
+
+  const app = getApp<App>()
 
   const musicList: { [key: string]: unknown }[] = wx.getStorageSync('musicList')
   // 正在播放歌曲的index
@@ -22,7 +27,15 @@ definePage((query, ctx) => {
 
   // 加载音乐详情
   async function loadMusicDetail(musicId: string) {
-    backgroundAudioManager.stop()
+    if (parseInt(musicId) == app.getPlayingMusicId()) {
+      isSame.value = true
+    } else {
+      isSame.value = false
+    }
+
+    if (!isSame.value) {
+      backgroundAudioManager.stop()
+    }
     const music = musicList[currentIndex]
     await wx.setNavigationBarTitle({
       title: music.name as string,
@@ -30,6 +43,8 @@ definePage((query, ctx) => {
 
     picUrl.value = (music.al as { picUrl: string }).picUrl
     isPlaying.value = false
+
+    app.setPlayingMusicId(parseInt(musicId))
 
     // 加载音乐url
     await wx.showLoading({
@@ -51,20 +66,20 @@ definePage((query, ctx) => {
           await wx.showToast({
             title: '该歌曲暂无版权',
           })
-          await wx.hideLoading()
-          onNext()
           return
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        backgroundAudioManager.src = result.data[0].url as string
-        backgroundAudioManager.title = music.name as string
-        backgroundAudioManager.coverImgUrl = (
-          music.al as { picUrl: string }
-        ).picUrl
-        backgroundAudioManager.singer = (
-          music.ar as { [key: string]: string }[]
-        )[0].name
-        backgroundAudioManager.epname = (music.al as { name: string }).name
+        if (!isSame.value) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          backgroundAudioManager.src = result.data[0].url as string
+          backgroundAudioManager.title = music.name as string
+          backgroundAudioManager.coverImgUrl = (
+            music.al as { picUrl: string }
+          ).picUrl
+          backgroundAudioManager.singer = (
+            music.ar as { [key: string]: string }[]
+          )[0].name
+          backgroundAudioManager.epname = (music.al as { name: string }).name
+        }
 
         isPlaying.value = true
         await wx.hideLoading()
@@ -97,6 +112,14 @@ definePage((query, ctx) => {
       backgroundAudioManager.play()
     }
     isPlaying.value = !isPlaying.value
+  }
+
+  function onPlay() {
+    isPlaying.value = true
+  }
+
+  function onPause() {
+    isPlaying.value = false
   }
 
   // 切换上一曲
@@ -135,11 +158,14 @@ definePage((query, ctx) => {
   return {
     picUrl,
     isPlaying,
+    isSame,
     isLyricShow,
     lyric,
     togglePlaying,
     onPrev,
     onNext,
+    onPlay,
+    onPause,
     onChangeLyricShow,
     timeUpdate,
   }

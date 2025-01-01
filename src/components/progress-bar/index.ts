@@ -1,6 +1,9 @@
 import { defineComponent, onReady, reactive, ref } from '@vue-mini/core'
 
 defineComponent({
+  properties: {
+    isSame: Boolean,
+  },
   setup(props, ctx) {
     let progressValue = 0
     let movableDisValue = 0
@@ -21,6 +24,9 @@ defineComponent({
     const progress = ref(0)
 
     onReady(() => {
+      if (props.isSame && showTime.totalTime == '00:00') {
+        setTime()
+      }
       getMovableDis()
       bindBGMEvents()
     })
@@ -61,11 +67,14 @@ defineComponent({
     function bindBGMEvents() {
       backgroundAudioManager.onPlay(() => {
         isMoving = false
+        ctx.triggerEvent('musicPlay')
       })
 
       backgroundAudioManager.onStop(() => {})
 
-      backgroundAudioManager.onPause(() => {})
+      backgroundAudioManager.onPause(() => {
+        ctx.triggerEvent('musicPause')
+      })
 
       backgroundAudioManager.onWaiting(() => {})
 
