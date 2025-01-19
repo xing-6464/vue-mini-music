@@ -1,21 +1,29 @@
-.home {
-  text-align: center;
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  background-color: #fff;
+  height: 100rpx;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  box-sizing: border-box;
 }
 
-.logo {
-  width: 400px;
-  height: 400px;
-  margin-top: 120px;
+.header .icon-fabu {
+  font-size: 48rpx;
 }
 
-.greeting {
-  color: #2c3e50;
-  font-size: 64px;
-  font-weight: bold;
+.publish-container {
+  width: 68rpx;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (prefers-color-scheme: dark) {
-  .greeting {
-    color: #fff;
-  }
+.search-container {
+  flex: 1;
 }

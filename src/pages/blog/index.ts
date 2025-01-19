@@ -1,9 +1,12 @@
-import { definePage, ref } from "@vue-mini/core";
+import { definePage } from '@vue-mini/core'
 
 definePage(() => {
-  const greeting = ref("欢迎使用 Vue Mini");
+  // 发布
+  function onPublish() {
+    console.log('publish')
+  }
 
   return {
-    greeting,
-  };
-});
+    onPublish,
+  }
+})

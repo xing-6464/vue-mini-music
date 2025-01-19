@@ -7,6 +7,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/blog/index",
+          "pathName": "pages/blog/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/musicList/index",
           "pathName": "pages/musicList/index",
           "query": "playlistId=5146191146",
