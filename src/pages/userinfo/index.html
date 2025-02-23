@@ -1,0 +1,27 @@
+<view>
+  <form bind:submit="formSubmit">
+    <!-- 头像 -->
+    <button
+      class="avatar-wrapper"
+      open-type="chooseAvatar"
+      bindchooseavatar="onChooseAvatar"
+    >
+      <image class="avatar" src="{{avatarUrl}}"></image>
+    </button>
+
+    <!-- 昵称 -->
+    <view class="nickname-wrapper">
+      <label class="nickname-label">
+        <text class="nickname-text">昵称</text>
+        <input
+          class="nickname"
+          type="nickname"
+          placeholder="请输入昵称"
+          name="nickname"
+        />
+      </label>
+    </view>
+
+    <button type="warn" form-type="submit" class="save-btn">保存</button>
+  </form>
+</view>

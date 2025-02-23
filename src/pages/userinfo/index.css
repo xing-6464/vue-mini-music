@@ -1,0 +1,35 @@
+.avatar-wrapper {
+  padding: 0;
+  width: 160rpx;
+  border-radius: 16rpx;
+  margin-top: 80rpx;
+  margin-bottom: 80rpx;
+}
+
+.avatar {
+  display: block;
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.nickname-wrapper {
+  border: 1px solid #ccc;
+  padding: 30rpx;
+}
+
+.nickname-label {
+  display: flex;
+}
+
+.nickname-text {
+  flex: 2;
+}
+
+.nickname {
+  flex: 3;
+}
+
+.save-btn {
+  margin-top: 80rpx;
+  width: 240rpx;
+}

@@ -3,6 +3,8 @@ import { createApp } from '@vue-mini/core'
 export type App = {
   setPlayingMusicId: (musicId: number) => void
   getPlayingMusicId: () => number
+  setOpenid: (openid: string) => void
+  getOpenid: () => string
 }
 
 createApp(() => {
@@ -17,6 +19,28 @@ createApp(() => {
 
   const globalData = {
     playingMusicId: -1,
+    openid: '',
+  }
+
+  void _getOpenid()
+
+  function _setOpenid(openid: string) {
+    globalData.openid = openid
+  }
+
+  async function _getOpenid() {
+    const res = await wx.cloud.callFunction({
+      name: 'login',
+    })
+    const openid = (res.result as AnyObject).openid as string
+    _setOpenid(openid)
+    if (wx.getStorageSync(openid) === '') {
+      wx.setStorageSync('openid', [])
+    }
+  }
+
+  function getOpenid() {
+    return globalData.openid
   }
 
   function setPlayingMusicId(musicId: number) {
@@ -30,5 +54,6 @@ createApp(() => {
   return {
     setPlayingMusicId,
     getPlayingMusicId,
+    getOpenid,
   }
 })
