@@ -32,7 +32,7 @@ createApp(() => {
     const res = await wx.cloud.callFunction({
       name: 'login',
     })
-    const openid = (res.result as AnyObject).openid as string
+    const openid = ((res.result as AnyObject).openid as string) || ''
     _setOpenid(openid)
     if (wx.getStorageSync(openid) === '') {
       wx.setStorageSync('openid', [])

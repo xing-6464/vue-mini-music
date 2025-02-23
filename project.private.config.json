@@ -7,6 +7,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/blogEdit/index",
+          "pathName": "pages/blogEdit/index",
+          "query": "nickName=\"星光\"&avatarUrl=\"cloud://cloud1-5g5oe2k1d4d8d78e.636c-cloud1-5g5oe2…16338/avatar/1740302389350-806244.2730661774.jpeg\"",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/userinfo/index",
           "pathName": "pages/userinfo/index",
           "query": "",
