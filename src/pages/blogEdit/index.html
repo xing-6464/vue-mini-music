@@ -2,18 +2,39 @@
   <textarea
     class="content"
     placeholder="分享新鲜事..."
-    bind:input="onInput"
-    bind:focus="onFocus"
-    bind:blur="onBlur"
+    bindinput="onInput"
+    bindfocus="onFocus"
+    bindblur="onBlur"
     maxlength="140"
     autofocus
   ></textarea>
 
   <view class="image-list">
     <!-- 显示图片 -->
+    <block wx:for="{{images}}" wx:key="tempFilePath">
+      <view class="image-wrap">
+        <image
+          class="image"
+          src="{{item.tempFilePath}}"
+          mode="aspectFill"
+          bind:tap="onPreviewImage"
+          data-imgSrc="{{item.tempFilePath}}"
+        >
+          <i
+            class="iconfont icon-shanchu"
+            bindtap="onDeleteImage"
+            data-index="{{index}}"
+          ></i>
+        </image>
+      </view>
+    </block>
 
     <!-- 选择图片 -->
-    <view class="image-wrap selectphoto">
+    <view
+      class="image-wrap selectphoto"
+      bindtap="onChooseImage"
+      hidden="{{!selectPhoto}}"
+    >
       <i class="iconfont icon-jiahao"></i>
     </view>
   </view>
